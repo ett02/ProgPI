@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -41,10 +42,11 @@ public class Product {
     @Column(name = "quantity")
     private int quantity;
 
-    @OneToMany(mappedBy = "product")
-    @JsonIgnore
+    @OneToMany(mappedBy ="product",cascade = CascadeType.MERGE)
     @ToString.Exclude
-    private List<Suggested> suggestedList;
+    @JsonIgnore
+    private ArrayList<ProductInCart> productInCartList;
+
 
 
 }

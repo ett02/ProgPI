@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name =  "userPrime")
 public class UserPrime {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
     private int ID;
 
@@ -45,9 +45,6 @@ public class UserPrime {
     @Basic
     @Column(name = "sconto")
     private float sconto;
-
-    @OneToMany(mappedBy = "userPrime")
-    private List<Suggested> suggestedList;
 
 
 

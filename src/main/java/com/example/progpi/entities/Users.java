@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
@@ -39,6 +40,11 @@ public class Users {
     @Basic
     @Column(name = "addresss", length = 180)
     private String addresss;
+
+
+    @OneToOne
+    @ToString.Exclude
+    private Cart cart;
 
 
 

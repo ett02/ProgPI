@@ -1,19 +1,24 @@
 package com.example.progpi.services;
 
-
-import com.example.progpi.entities.User;
+import com.example.progpi.entities.Users;
+import com.example.progpi.repositories.UsersRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+
 @Service
 public class UserService {
 
-    public ArrayList<User> db = new ArrayList<>();
+    @Autowired
+    UsersRepository usersRepository;
 
-    public User SaveUser(User u) {
-        db.add(u);
-        return u;
+    public Users SaveUser(Users u) {
+        return usersRepository.save(u);
     }
 
+    public Users getUser(String email) {
+        return usersRepository.findByEmail(email);
+    }
 }

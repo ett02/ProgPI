@@ -21,4 +21,8 @@ public class UserService {
     public Users getUser(String email) {
         return usersRepository.findByEmail(email);
     }
+
+    public boolean Esiste(String email){
+        return usersRepository.existsByEmail(email);
+    }
 }

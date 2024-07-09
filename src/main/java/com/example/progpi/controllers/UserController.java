@@ -6,7 +6,6 @@ import com.example.progpi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 
 @RestController
 
@@ -15,11 +14,6 @@ public class UserController {
     @Autowired
     private UserService uS;
 
-    @GetMapping("/test")
-    public String test(){
-
-        return "Hello";
-    }
 
     @GetMapping("/add")
     public Users SaveUser(@RequestBody Users u){
@@ -34,5 +28,12 @@ public class UserController {
     public Users getUser(@RequestParam("email")String email){
         return uS.getUser(email);
     }
+
+    @GetMapping("/esiste")
+    public boolean Esiste(@RequestParam("email")String email){
+        return uS.Esiste(email);
+    }
+
+
 
 }

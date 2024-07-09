@@ -11,7 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name =  " suggested")
+@Table(name =  "suggested")
 public class Suggested {
 
     @Id
@@ -20,7 +20,7 @@ public class Suggested {
     private int ID;
 
     @ManyToOne
-    @JoinColumn(name = "userP")
+    @JoinColumn(name = "uPrime")
     @JsonIgnore
     @ToString.Exclude
     private UserPrime usersP;

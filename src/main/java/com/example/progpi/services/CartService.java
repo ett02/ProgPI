@@ -9,6 +9,8 @@ import com.example.progpi.repositories.ProductInCartRepository;
 import com.example.progpi.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,33 @@ public class CartService {
     @Autowired
     private ProductInCartRepository productInCartRepository;
 
+    @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
+    public Cart addProd(List<Product> productList,  Users user) throws Exception{
+        Cart c = (Cart) cartRepository.findCartByUserID(user.getID());
+        if(c.getListProductInCart()==null){
+            c.setListProductInCart(new ArrayList<ProductInCart>());
+            cartRepository.save(c);
+        }
+        for (Product product : productList) {
+            if(product.getPrice()!= productRepository.findProductById(product.getId()).getPrice()) {
+                throw new RuntimeException("prezzo cambiato");// da fare
+            }
+            if(productInCartRepository.findProductByID(product.getId())){
+                ProductInCart prod = productInCartRepository.findByProductID(product.getId());
+                Product pr =productRepository.findProductById(product.getId());
+                prod.setQuantity(product.getQuantity()+1);
+            }else{
+                ProductInCart pc = new ProductInCart();
+                pc.setProduct(product);
+                pc.setCart(c);
+                pc.setQuantity(1);
+            }
+        }
+        return c;
+    }
 
+
+    @Transactional(readOnly = true, propagation= Propagation.REQUIRED)
     public List<Product> getProductbyUser(int u) {
         Cart cart = cartRepository.findByUserID(u);
 
@@ -34,6 +62,5 @@ public class CartService {
         }
         return ret;
     }
-
 
 }

@@ -1,11 +1,9 @@
 package com.example.progpi.entities;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,12 +19,11 @@ public class Cart implements Serializable {
     @Column(name = "id")
     private int ID;
 
-    @ManyToOne
-    @JoinColumn(name = "userS" )
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "relatUser" )
     private Users user;
 
-    @OneToMany(mappedBy = "cart")
-
+    @OneToMany(mappedBy = "cart",cascade = CascadeType.MERGE)
     List<ProductInCart> listProductInCart;
 
 }

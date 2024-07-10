@@ -42,7 +42,7 @@ public class Product {
     @Column(name = "quantity")
     private int quantity;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",cascade = CascadeType.MERGE)
     @ToString.Exclude
     List<ProductInCart> listProductInCart;
 

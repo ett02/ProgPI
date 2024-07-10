@@ -1,5 +1,6 @@
 package com.example.progpi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,8 +45,9 @@ public class Users {
     private String address;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.MERGE)
     @ToString.Exclude
-    private ArrayList<Cart> cartList;
+    @JsonIgnore
+    private Cart cart;
 
 }

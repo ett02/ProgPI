@@ -16,6 +16,9 @@ public class ProductInCart {
     @Column(name = "id", nullable = false)
     private int ID;
 
+    @Basic
+    private int quantity;
+
     @ManyToOne
     @JoinColumn(name = "related_cart")
     private Cart cart;

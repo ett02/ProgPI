@@ -1,11 +1,11 @@
 package com.example.progpi.repositories;
 
 import com.example.progpi.entities.Cart;
-import com.example.progpi.entities.Product;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Repository

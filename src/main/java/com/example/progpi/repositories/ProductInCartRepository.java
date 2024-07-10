@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface ProductInCartRepository extends JpaRepository<ProductInCart, Integer>{
 
-    //List<ProductInCart> findAllByByCartID(int cartId);
-    List<Product> findAllProductsByCartID(int cartId);
+    List<ProductInCart> findAllByCartID(int cartId);
+
 
 }

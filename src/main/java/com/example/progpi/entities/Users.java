@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +20,7 @@ public class Users {
     private int ID;
 
     @Basic
-    @Column (name = "first_Name", length = 50)
+    @Column (name = "name", length = 50)
     private String name;
 
     @Basic
@@ -38,17 +40,12 @@ public class Users {
     private String telephon;
 
     @Basic
-    @Column(name = "addresss", length = 180)
-    private String addresss;
+    @Column(name = "address", length = 180)
+    private String address;
 
 
-    @OneToOne
+    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE)
     @ToString.Exclude
-    private Cart cart;
+    private ArrayList<Cart> cartList;
 
-
-
-
-    // utiliziamo maven per il costruttore e i get, usiamo il pachetto lombok,
-    // per evitare di definire manualmante i metodi get set e costruttore
 }

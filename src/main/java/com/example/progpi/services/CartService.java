@@ -24,9 +24,16 @@ public class CartService {
     private ProductInCartRepository productInCartRepository;
 
 
-    public List<Product> getProductbyUser(Users u) {
-        Cart cart =  cartRepository.findByUserID(u.getID());
-        return productInCartRepository.findAllProductsByCartID(cart.getID());
+    public List<Product> getProductbyUser(int u) {
+        Cart cart = cartRepository.findByUserID(u);
+
+        List<ProductInCart> PC=productInCartRepository.findAllByCartID(cart.getID());
+        List<Product> ret= new ArrayList<>();
+        for(ProductInCart productInCart: PC ){
+            ret.add(productInCart.getProduct());
+        }
+        return ret;
     }
+
 
 }

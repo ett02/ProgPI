@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
@@ -14,19 +15,18 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name =  "cart")
-public class Cart {
+public class Cart implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private int ID;
 
-    @OneToOne
-    @ToString.Exclude
-    @JoinColumn(name = "userS", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "userS" )
     private Users user;
 
     @OneToMany(mappedBy = "cart")
-    @ToString.Exclude
+
     List<ProductInCart> listProductInCart;
 
 }

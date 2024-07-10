@@ -1,17 +1,13 @@
 package com.example.progpi.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.springframework.context.annotation.Lazy;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -29,10 +25,8 @@ public class Cart {
     @JoinColumn(name = "userS", nullable = false)
     private Users user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.REMOVE)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "cart")
     @ToString.Exclude
-    private ArrayList<ProductInCart> productInCartList;
-
+    List<ProductInCart> listProductInCart;
 
 }

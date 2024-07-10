@@ -1,6 +1,5 @@
 package com.example.progpi.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +8,7 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Data
 @NoArgsConstructor
@@ -42,10 +42,9 @@ public class Product {
     @Column(name = "quantity")
     private int quantity;
 
-    @OneToMany(mappedBy ="product",cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "product")
     @ToString.Exclude
-    @JsonIgnore
-    private ArrayList<ProductInCart> productInCartList;
+    List<ProductInCart> listProductInCart;
 
 
 

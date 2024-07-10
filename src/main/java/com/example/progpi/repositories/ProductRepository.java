@@ -1,9 +1,14 @@
 package com.example.progpi.repositories;
 
+
 import com.example.progpi.entities.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ProductRepository {
+public interface ProductRepository extends JpaRepository<Product, Integer> {
+
+    Product getProductById(int id);
+
 
 }

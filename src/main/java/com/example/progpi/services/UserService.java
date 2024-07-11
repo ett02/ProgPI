@@ -36,12 +36,9 @@ public class UserService {
             throw new ExistingUserException();
         }else {
             Cart cart = new Cart();
-            ProductInCart productInCart = new ProductInCart();
             u.setCart(cart);
             cart.setUser(u);
-            productInCart.setCart(cart);
             cart.setListProductInCart(new ArrayList<>());
-            productInCartRepository.save(productInCart);
             cartRepository.save(cart);
             usersRepository.save(u);
             return u;

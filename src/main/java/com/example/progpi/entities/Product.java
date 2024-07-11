@@ -16,10 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name =  "product")
-public class Product implements Serializable {
+public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int ID;
 
@@ -43,7 +43,7 @@ public class Product implements Serializable {
     @Column(name = "quantity")
     private int quantity;
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "product")
     @ToString.Exclude
     List<ProductInCart> listProductInCart;
 

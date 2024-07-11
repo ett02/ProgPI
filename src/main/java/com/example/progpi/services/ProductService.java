@@ -1,26 +1,49 @@
 package com.example.progpi.services;
 
+import com.example.progpi.Utilities.Exception.NoConsistentQuantityException;
 import com.example.progpi.entities.Product;
 import com.example.progpi.repositories.ProductRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @PersistenceContext
+    EntityManager entityManager;
+
+
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
-    public Product addProduct(Product product) throws Exception{
-        if(productRepository.existsProductByBarCode(product.getBarCode())){
-            throw new Exception("Product already exists");
-        }else{
+    public Product addUpdateProduct(Product product) throws NoConsistentQuantityException {
+        if(!productRepository.existsByBarCode(product.getBarCode()))
             productRepository.save(product);
-        }
-        return  product;
+        Product product1 =productRepository.findProductByBarCode(product.getBarCode());
+        product1.setQuantity(product.getQuantity()+product1.getQuantity());
+        if(product1.getQuantity()<0)
+            throw new NoConsistentQuantityException();
+
+        return productRepository.findProductByBarCode(product.getBarCode());
     }
+
+
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+    public Product getProduct(int id) throws Exception{
+        return productRepository.findProductByID(id);
+    }
+
+    @Transactional(readOnly = true,  propagation= Propagation.REQUIRED)
+    public boolean Esiste(@RequestParam("code" )String code) throws Exception{
+        return productRepository.existsByBarCode(code);
+    }
+
 
 
 }

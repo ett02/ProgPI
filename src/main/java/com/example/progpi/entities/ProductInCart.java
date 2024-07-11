@@ -1,5 +1,6 @@
 package com.example.progpi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class ProductInCart implements Serializable {
     private int quantity;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "related_cart")
     private Cart cart;
 

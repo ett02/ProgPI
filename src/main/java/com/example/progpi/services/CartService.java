@@ -43,33 +43,45 @@ public class CartService {
         }
 
         Cart c = cartRepository.findCartByUserID(user.getID());
+        List<ProductInCart> listp=c.getListProductInCart();
+
         for (Product product : productList) {
-            if(product.getPrice()!= productRepository.findProductByID(product.getID()).getPrice()) { // se il prezzo è cambiato
+            if (!productRepository.existsById(product.getID())) {
+                throw new RuntimeException("prod non esiste");
+            }
+            if (product.getPrice() != productRepository.findProductByID(product.getID()).getPrice()) { // se il prezzo è cambiato
                 throw new PriceChangedException();// da fare
             }
-            if(productInCartRepository.findProductByID(product.getID())){// se è già presente del carrello aumento la quantità
-                ProductInCart pc = productInCartRepository.findByProductID(product.getID());
-                Product pr =productRepository.findProductByID(product.getID());
-                pc.setQuantity(product.getQuantity()+1);
-                productInCartRepository.save(pc);
-            }else{//altrimenti lo aggiungo
-                ProductInCart pc =productInCartRepository.findByCartID(c.getID());
+            if (!productInCartRepository.existsByID(product.getID())) {//
+                //altrimenti lo aggiungo
+                ProductInCart pc = new ProductInCart();
+                pc.setCart(c);
                 pc.setProduct(product);
-                pc.setQuantity(1);
+                pc.setQuantity(product.getQuantity());
+                chek(product);
+                listp.add(pc);
                 productInCartRepository.save(pc);
-            }
-            for (ProductInCart pc : c.getListProductInCart()) {//controlliamo la quanità
-                if(productRepository.findProductByID(pc.getID()).getQuantity()-pc.getQuantity()<0){
-                    throw new QuantityNotAvaibleException();
-                }else {// setta la quantità disponibile aggiornandola
-                    Product product1 = productRepository.findProductByID(pc.getProduct().getID());
-                    product1.setQuantity(product1.getQuantity()- pc.getQuantity());
-                    productRepository.save(product1);
-                    entityManager.merge(product1);
-                }
+            } else {
+                chek(product);
+                ProductInCart pc = productInCartRepository.findByProductID(product.getID());
+                pc.setQuantity(product.getQuantity() + pc.getQuantity());
+                productInCartRepository.save(pc);
             }
         }
+
         return c;
+    }
+
+    @Transactional(readOnly = true, propagation= Propagation.REQUIRED)
+    public void chek(Product pro) throws QuantityNotAvaibleException {
+        Product p = productRepository.findProductByID(pro.getID());
+        if (p.getQuantity() - pro.getQuantity() < 0) {
+            throw new QuantityNotAvaibleException();
+        } else {// setta la quantità disponibile aggiornandola
+            p.setQuantity(p.getQuantity() - pro.getQuantity());
+            productRepository.save(p);
+            entityManager.merge(p);
+        }
     }
 
 
@@ -84,5 +96,4 @@ public class CartService {
         }
         return ret;
     }
-
 }

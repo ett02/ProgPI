@@ -33,10 +33,11 @@ public class ProductService {
             if (q < 0 )
                 throw new NoConsistentQuantityException();
             product1.setQuantity(q);
+            if(product.getPrice()<0)
+                throw new RuntimeException(); // da fare nel controller con la maschera
+            product1.setPrice(product.getPrice());
         }
-
         return productRepository.findProductByBarCode(product.getBarCode());
-
     }
 
 

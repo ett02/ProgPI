@@ -46,6 +46,7 @@ public class CartService {
         List<ProductInCart> listp=c.getListProductInCart();
 
         for (Product product : productList) {
+
             if (!productRepository.existsById(product.getID())) {
                 throw new RuntimeException("prod non esiste");
             }
@@ -65,7 +66,6 @@ public class CartService {
                 chek(product);
                 ProductInCart pc = productInCartRepository.findByProductID(product.getID());
                 pc.setQuantity(product.getQuantity() + pc.getQuantity());
-                productInCartRepository.save(pc);
             }
         }
 
@@ -79,8 +79,6 @@ public class CartService {
             throw new QuantityNotAvaibleException();
         } else {// setta la quantità disponibile aggiornandola
             p.setQuantity(p.getQuantity() - pro.getQuantity());
-            productRepository.save(p);
-            entityManager.merge(p);
         }
     }
 

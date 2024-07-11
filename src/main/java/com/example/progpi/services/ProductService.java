@@ -11,8 +11,8 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public boolean addProduct(Product product) {
-        return productRepository.save(product) != null;
+    public Product addProduct(Product product) {
+        return productRepository.save(product);
     }
 
 

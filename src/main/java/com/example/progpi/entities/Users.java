@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 @Data
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class Users {
+public class Users implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column (name = "id", nullable = false, unique = true)

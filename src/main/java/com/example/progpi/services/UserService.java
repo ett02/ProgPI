@@ -26,7 +26,7 @@ public class UserService {
 
 
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
-    public Users SaveUser(Users u) {
+    public Users SaveUser(Users u) throws Exception{
         if(usersRepository.existsById(u.getID())){
             throw new ExistingUserException();
         }else {

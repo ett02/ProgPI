@@ -46,12 +46,12 @@ public class CartService {
             cartRepository.save(c);
         }
         for (Product product : productList) {
-            if(product.getPrice()!= productRepository.findProductById(product.getId()).getPrice()) { // se il prezzo è cambiato
+            if(product.getPrice()!= productRepository.findProductByID(product.getID()).getPrice()) { // se il prezzo è cambiato
                 throw new PriceChangedException();// da fare
             }
-            if(productInCartRepository.findProductByID(product.getId())){// se è già presente del carrello aumento la quantità
-                ProductInCart pc = productInCartRepository.findByProductID(product.getId());
-                Product pr =productRepository.findProductById(product.getId());
+            if(productInCartRepository.findProductByID(product.getID())){// se è già presente del carrello aumento la quantità
+                ProductInCart pc = productInCartRepository.findByProductID(product.getID());
+                Product pr =productRepository.findProductByID(product.getID());
                 pc.setQuantity(product.getQuantity()+1);
                 productInCartRepository.save(pc);
             }else{//altrimenti lo aggiungo
@@ -62,10 +62,10 @@ public class CartService {
                 productInCartRepository.save(pc);
             }
             for (ProductInCart pc : c.getListProductInCart()) {//controlliamo la quanità
-                if(productRepository.findProductById(pc.getID()).getQuantity()-pc.getQuantity()<0){
+                if(productRepository.findProductByID(pc.getID()).getQuantity()-pc.getQuantity()<0){
                     throw new QuantityNotAvaibleException();
                 }else {// setta la quantità disponibile aggiornandola
-                    Product product1 = productRepository.findProductById(pc.getProduct().getId());
+                    Product product1 = productRepository.findProductByID(pc.getProduct().getID());
                     product1.setQuantity(product1.getQuantity()- pc.getQuantity());
                     productRepository.save(product1);
                     entityManager.merge(product1);

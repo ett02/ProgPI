@@ -1,6 +1,6 @@
 package com.example.progpi.Utilities.Exception;
 
-public class ExistingUserException extends RuntimeException {
+public class ExistingUserException extends Exception {
 
     public ExistingUserException() {}
 

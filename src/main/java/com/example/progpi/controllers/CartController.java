@@ -1,10 +1,17 @@
 package com.example.progpi.controllers;
 
+import com.example.progpi.Utilities.Exception.PriceChangedException;
+import com.example.progpi.Utilities.Exception.QuantityNotAvaibleException;
+import com.example.progpi.Utilities.Exception.UserNotFoundException;
+import com.example.progpi.entities.Cart;
 import com.example.progpi.entities.Product;
 import com.example.progpi.entities.ProductInCart;
 import com.example.progpi.entities.Users;
 import com.example.progpi.repositories.ProductInCartRepository;
 import com.example.progpi.services.CartService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,4 +35,8 @@ public class CartController {
         return cartService.getProductbyUser(id);
     }
 
+    @GetMapping("/addProd")
+    public ResponseEntity<Cart> addProd(@RequestParam List<Product> productList,  @RequestParam String cF) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
+        return new ResponseEntity(cartService.addProd(productList, cF), HttpStatus.OK);
+    }
 }

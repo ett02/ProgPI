@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -15,6 +16,8 @@ import java.io.Serializable;
 @Table(name =  "productIncart")
 public class ProductInCart implements Serializable {
     @Id
+    @JsonIgnore
+    @ToString.Exclude
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int ID;
@@ -24,6 +27,7 @@ public class ProductInCart implements Serializable {
 
     @ManyToOne
     @JsonIgnore
+    @ToString.Exclude
     @JoinColumn(name = "related_cart")
     private Cart cart;
 

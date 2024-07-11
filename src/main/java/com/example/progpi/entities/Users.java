@@ -17,6 +17,8 @@ import java.util.ArrayList;
 @Table(name = "users")
 public class Users implements Serializable {
     @Id
+    @JsonIgnore
+    @ToString.Exclude
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name = "id", nullable = false, unique = true)
     private int ID;

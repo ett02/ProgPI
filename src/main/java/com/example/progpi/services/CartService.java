@@ -49,11 +49,10 @@ public class CartService {
             if (!productRepository.existsByBarCode(product.getBarCode())) {
                 throw new RuntimeException("prod non esiste");
             }
-           /* if (product.getPrice() != productRepository.findProductByBarCode(product.getBarCode()).getPrice()) { // se il prezzo è cambiato
+            if (product.getPrice() != productRepository.findProductByBarCode(product.getBarCode()).getPrice()) { // se il prezzo è cambiato
                 throw new PriceChangedException();// da fare
             }
 
-            */
             Product p = productRepository.findProductByBarCode(product.getBarCode());
             if (!productInCartRepository.existsByID(p.getID())) {//
                 //altrimenti lo aggiungo
@@ -76,8 +75,7 @@ public class CartService {
         return c;
     }
 
-    @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
-    public void chek(Product pro) throws QuantityNotAvaibleException {
+    private void chek(Product pro) throws QuantityNotAvaibleException {
         Product p = productRepository.findProductByBarCode(pro.getBarCode());
         if (p.getQuantity() - pro.getQuantity() < 0) {
             throw new QuantityNotAvaibleException();
@@ -86,11 +84,9 @@ public class CartService {
         }
     }
 
-
     @Transactional(readOnly = true, propagation= Propagation.REQUIRED)
     public List<Product> getProductbyUser(int u) {
         Cart cart = cartRepository.findByUserID(u);
-
         List<ProductInCart> PC=productInCartRepository.findAllByCartID(cart.getID());
         List<Product> ret= new ArrayList<>();
         for(ProductInCart productInCart: PC ){

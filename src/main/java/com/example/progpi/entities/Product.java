@@ -1,5 +1,6 @@
 package com.example.progpi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,8 @@ import java.util.List;
 public class Product {
 
     @Id
+    @JsonIgnore
+    @ToString.Exclude
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int ID;
@@ -44,6 +47,7 @@ public class Product {
     private int quantity;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
+    @JsonIgnore
     @ToString.Exclude
     List<ProductInCart> listProductInCart;
 

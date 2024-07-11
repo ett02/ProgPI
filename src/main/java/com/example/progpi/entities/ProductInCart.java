@@ -27,7 +27,7 @@ public class ProductInCart implements Serializable {
     @JoinColumn(name = "related_cart")
     private Cart cart;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "related_product")
     private Product product;
 

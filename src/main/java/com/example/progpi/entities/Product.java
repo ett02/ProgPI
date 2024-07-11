@@ -28,7 +28,7 @@ public class Product {
     private String name;
 
     @Basic
-    @Column(name = "barCode", length = 100, nullable = false)
+    @Column(name = "barCode", length = 100, nullable = false, unique = true)
     private String barCode;
 
     @Basic

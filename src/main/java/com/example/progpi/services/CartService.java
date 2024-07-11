@@ -41,40 +41,44 @@ public class CartService {
         if(!usersRepository.existsById(user.getID())){
             throw new UserNotFoundException();
         }
-
         Cart c = cartRepository.findCartByUserID(user.getID());
         List<ProductInCart> listp=c.getListProductInCart();
 
         for (Product product : productList) {
 
-            if (!productRepository.existsById(product.getID())) {
+            if (!productRepository.existsByBarCode(product.getBarCode())) {
                 throw new RuntimeException("prod non esiste");
             }
-            if (product.getPrice() != productRepository.findProductByID(product.getID()).getPrice()) { // se il prezzo è cambiato
+           /* if (product.getPrice() != productRepository.findProductByBarCode(product.getBarCode()).getPrice()) { // se il prezzo è cambiato
                 throw new PriceChangedException();// da fare
             }
-            if (!productInCartRepository.existsByID(product.getID())) {//
+
+            */
+            Product p = productRepository.findProductByBarCode(product.getBarCode());
+            if (!productInCartRepository.existsByID(p.getID())) {//
                 //altrimenti lo aggiungo
                 ProductInCart pc = new ProductInCart();
                 pc.setCart(c);
-                pc.setProduct(product);
+                pc.setProduct(p);
                 pc.setQuantity(product.getQuantity());
                 chek(product);
                 listp.add(pc);
                 productInCartRepository.save(pc);
+
             } else {
                 chek(product);
-                ProductInCart pc = productInCartRepository.findByProductID(product.getID());
+                ProductInCart pc = productInCartRepository.findByProductID(p.getID());
                 pc.setQuantity(product.getQuantity() + pc.getQuantity());
+
             }
         }
 
         return c;
     }
 
-    @Transactional(readOnly = true, propagation= Propagation.REQUIRED)
+    @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
     public void chek(Product pro) throws QuantityNotAvaibleException {
-        Product p = productRepository.findProductByID(pro.getID());
+        Product p = productRepository.findProductByBarCode(pro.getBarCode());
         if (p.getQuantity() - pro.getQuantity() < 0) {
             throw new QuantityNotAvaibleException();
         } else {// setta la quantità disponibile aggiornandola

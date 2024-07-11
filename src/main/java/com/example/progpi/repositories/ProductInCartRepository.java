@@ -12,7 +12,7 @@ public interface ProductInCartRepository extends JpaRepository<ProductInCart, In
 
     boolean findProductByID(int id);
     ProductInCart findByProductID(int id);
+    ProductInCart findByCartID( int cartID);
     List<ProductInCart> findAllByCartID(int cartId);
-
 
 }

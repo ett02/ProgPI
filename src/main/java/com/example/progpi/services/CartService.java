@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartService {
@@ -40,11 +41,8 @@ public class CartService {
         if(!usersRepository.existsById(user.getID())){
             throw new UserNotFoundException();
         }
-        Cart c = (Cart) cartRepository.findCartByUserID(user.getID());
-        if(c.getListProductInCart()==null){
-            c.setListProductInCart(new ArrayList<ProductInCart>());
-            cartRepository.save(c);
-        }
+
+        Cart c = cartRepository.findCartByUserID(user.getID());
         for (Product product : productList) {
             if(product.getPrice()!= productRepository.findProductByID(product.getID()).getPrice()) { // se il prezzo è cambiato
                 throw new PriceChangedException();// da fare
@@ -55,9 +53,8 @@ public class CartService {
                 pc.setQuantity(product.getQuantity()+1);
                 productInCartRepository.save(pc);
             }else{//altrimenti lo aggiungo
-                ProductInCart pc = new ProductInCart();
+                ProductInCart pc =productInCartRepository.findByCartID(c.getID());
                 pc.setProduct(product);
-                pc.setCart(c);
                 pc.setQuantity(1);
                 productInCartRepository.save(pc);
             }

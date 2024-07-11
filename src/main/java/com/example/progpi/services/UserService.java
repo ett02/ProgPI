@@ -3,8 +3,10 @@ package com.example.progpi.services;
 import com.example.progpi.Utilities.Exception.ExistingUserException;
 import com.example.progpi.entities.Cart;
 
+import com.example.progpi.entities.ProductInCart;
 import com.example.progpi.entities.Users;
 import com.example.progpi.repositories.CartRepository;
+import com.example.progpi.repositories.ProductInCartRepository;
 import com.example.progpi.repositories.UsersRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -23,6 +26,8 @@ public class UserService {
 
     @Autowired
     CartRepository cartRepository;
+    @Autowired
+    private ProductInCartRepository productInCartRepository;
 
 
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
@@ -31,8 +36,12 @@ public class UserService {
             throw new ExistingUserException();
         }else {
             Cart cart = new Cart();
+            ProductInCart productInCart = new ProductInCart();
             u.setCart(cart);
             cart.setUser(u);
+            productInCart.setCart(cart);
+            cart.setListProductInCart(new ArrayList<>());
+            productInCartRepository.save(productInCart);
             cartRepository.save(cart);
             usersRepository.save(u);
             return u;

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("/cart")
+@RequestMapping("/carts")
 public class CartController {
     @Autowired
     private CartService cartService;
@@ -36,7 +36,8 @@ public class CartController {
     }
 
     @GetMapping("/addProd")
-    public ResponseEntity<Cart> addProd(@RequestParam List<Product> productList,  @RequestParam String cF) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
-        return new ResponseEntity(cartService.addProd(productList, cF), HttpStatus.OK);
-    }
+    public ResponseEntity<Cart> addProd(@RequestBody List<Product> productList,  @RequestParam("cF") String cF) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
+       return new ResponseEntity(cartService.addProd(productList, cF), HttpStatus.OK);
+}
+
 }

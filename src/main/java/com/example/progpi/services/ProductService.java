@@ -23,14 +23,20 @@ public class ProductService {
 
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
     public Product addUpdateProduct(Product product) throws NoConsistentQuantityException {
-        if(!productRepository.existsByBarCode(product.getBarCode()))
+        if (!productRepository.existsByBarCode(product.getBarCode())){
+            if (product.getQuantity() < 0 )
+                throw new NoConsistentQuantityException();
             productRepository.save(product);
-        Product product1 =productRepository.findProductByBarCode(product.getBarCode());
-        product1.setQuantity(product.getQuantity()+product1.getQuantity());
-        if(product1.getQuantity()<0)
-            throw new NoConsistentQuantityException();
+        }else {
+            Product product1 = productRepository.findProductByBarCode(product.getBarCode());
+            int q=product.getQuantity() + product1.getQuantity();
+            if (q < 0 )
+                throw new NoConsistentQuantityException();
+            product1.setQuantity(q);
+        }
 
         return productRepository.findProductByBarCode(product.getBarCode());
+
     }
 
 

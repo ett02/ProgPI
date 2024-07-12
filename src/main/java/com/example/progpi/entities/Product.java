@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.LazyCollection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class Product {
     @Column(name = "quantity")
     private int quantity;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JsonIgnore
     @ToString.Exclude
     List<ProductInCart> listProductInCart;

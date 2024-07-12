@@ -48,7 +48,7 @@ public class Users implements Serializable {
     private String address;
 
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @ToString.Exclude
     @JsonIgnore
     private Cart cart;

@@ -6,12 +6,12 @@ import org.keycloak.admin.client.KeycloakBuilder;
 public class KeycloakConfig {
 
     static Keycloak keycloak = null;
-    final static String serverUrl = "http://localhost:8080";
-    public final static String realm = "psw";
-    final static String clientId = "giada";
+    final static String serverUrl = "http://localhost:8081";
+    public final static String realm = "piatSofWeb";
+    final static String clientId = "springEtt";
     final static String clientSecret = "TTXHQfu9iO9132fmkxejLkram2BsdOdA";
-    final static String userName = "user3";
-    final static String password = "123";
+    final static String userName = "ett";
+    final static String password = "12345";
 
 
     private KeycloakConfig() {

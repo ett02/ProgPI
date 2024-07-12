@@ -73,19 +73,29 @@ public class CartService {
             if (product.getPrice() != productRepository.findProductByBarCode(product.getBarCode()).getPrice()) {
                 throw new PriceChangedException();
             }
+            if(product.getQuantity()==0)// se la quantità è a zero vado al prossimo prodotto
+                break;
             Product product1 = productRepository.findProductByBarCode(product.getBarCode());
             if (!productInCartRepository.existsById(product1.getID())) {
                 ProductInCart productInCart = new ProductInCart();
                 productInCart.setProduct(product1);
                 productInCart.setCart(c);
+                if(product.getQuantity()<0)
+                    throw new RuntimeException("Negative quantity");
                 productInCart.setQuantity(product.getQuantity());
                 listp.add(productInCart);
                 quantityAvainlecheck(product);
                 productInCartRepository.save(productInCart);
             } else {
-                ProductInCart product2 = productInCartRepository.findByProductID(product.getID());
-                product2.setQuantity(product2.getQuantity() + product.getQuantity());
-                quantityAvainlecheck(product);
+                ProductInCart productInC2 = productInCartRepository.findByProductID(product.getID());
+                if(productInC2.getQuantity()+product.getQuantity()<0)// controllo nel caso si passi una quantità negativa che lo porti a zero
+                    throw new RuntimeException("Impossibile operation, could set quantity:"+productInC2.getQuantity()+product.getQuantity());
+                else if(productInC2.getQuantity()+product.getQuantity()==0) {
+                    productInCartRepository.delete(productInC2);
+                }else {
+                    productInC2.setQuantity(productInC2.getQuantity() + product.getQuantity());
+                    quantityAvainlecheck(product);
+                }
             }
         }
         return c;

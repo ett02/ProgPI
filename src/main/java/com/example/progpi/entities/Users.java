@@ -24,15 +24,23 @@ public class Users implements Serializable {
     private int ID;
 
     @Basic
-    @Column (name = "name", length = 50)
+    @Column(name = "nikname", length = 70, nullable = false)
+    private String nikname;
+
+    @Basic
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Basic
+    @Column (name = "name", length = 50, nullable = false)
     private String name;
 
     @Basic
-    @Column (name = "email", length = 100)
+    @Column (name = "email", length = 100, unique = true, nullable = false)
     private String email;
 
     @Basic
-    @Column (name = "surname", length = 50)
+    @Column (name = "surname", length = 50,nullable = false)
     private String surname;
 
     @Basic
@@ -44,8 +52,9 @@ public class Users implements Serializable {
     private String telephon;
 
     @Basic
-    @Column(name = "address", length = 180)
+    @Column(name = "address", length = 180,nullable = false)
     private String address;
+
 
 
     @OneToOne(cascade = CascadeType.REMOVE)

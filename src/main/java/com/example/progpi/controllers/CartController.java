@@ -26,21 +26,19 @@ public class CartController {
     @Autowired
     private ProductInCartRepository productInCartRepository;
 
-
     @GetMapping("/getAllProd")
-    public List<ProductInCart> getAllProducts(@RequestParam String codF) throws QuantityNotAvaibleException {
-        return cartService.getProductbyUser(codF);
+    public ResponseEntity<List<ProductInCart>> getAllProducts(@RequestParam String codF) throws QuantityNotAvaibleException {
+        return new ResponseEntity( cartService.getProductbyUser(codF), HttpStatus.OK);
     }
 
-    @GetMapping("/chekOut")
-    public ResponseEntity<Boolean> chekOut(@RequestBody List<Product> productList,  @RequestParam("cF") String cF) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
+    @PutMapping("/chekOut")
+    public ResponseEntity<Product> chekOut(@RequestBody List<Product> productList,  @RequestParam("cF") String cF) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
        return new ResponseEntity(cartService.chekOut(productList, cF), HttpStatus.OK);
     }
 
-    @GetMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<Cart> addProduct(@RequestBody List<Product> productList,  @RequestParam("cF") String cF) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
         return new ResponseEntity(cartService.aupdateProduc(productList, cF), HttpStatus.OK);
     }
-
 
 }

@@ -34,7 +34,7 @@ public class UserService {
 
 
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
-    public Users SaveUser(Users u) throws Exception{
+    public Users saveUser(Users u) throws Exception{
         if(usersRepository.existsById(u.getID())){
             throw new ExistingUserException();
         }else {
@@ -56,6 +56,20 @@ public class UserService {
     @Transactional(readOnly = true, propagation= Propagation.REQUIRED)
     public boolean Esiste(String email){
         return usersRepository.existsByEmail(email);
+    }
+
+    @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
+    public Users updateUser(Users u, String cF) throws Exception{
+        Users user = usersRepository.findByCodFisc(cF);
+
+        user.setEmail(u.getEmail());
+        user.setName(u.getName());
+        user.setSurname(u.getSurname());
+        user.setAddress(u.getAddress());
+        user.setTelephon(u.getTelephon());
+
+
+
     }
 
     @Transactional(readOnly = false)

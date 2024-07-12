@@ -15,9 +15,9 @@ public class UserController {
     private UserService uS;
 
     @GetMapping("/add")
-    public Users SaveUser(@RequestBody Users u){
+    public Users saveUser(@RequestBody Users u){
         try {
-            return uS.SaveUser(u);
+            return uS.saveUser(u);
         }catch (Exception e){
             return null;
         }

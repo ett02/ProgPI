@@ -29,7 +29,7 @@ public class CartService {
     private UsersRepository usersRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public boolean chekOut(List<Product> productList, String cF) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
+    public List<Product> chekOut(List<Product> productList, String cF) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
         Users user = usersRepository.findByCodFisc(cF);
         if (!usersRepository.existsById(user.getID())) {
             throw new UserNotFoundException();
@@ -52,9 +52,10 @@ public class CartService {
             }
         }
         // eliminare la lista dei prodotti acquistati
+
         productInCartRepository.deleteAll(listp);
         c.setListProductInCart(new ArrayList<>());
-        return true;
+        return productList;
     }
 
 

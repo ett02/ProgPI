@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.List;
 
 @Service
@@ -21,7 +20,6 @@ public class ProductService {
 
     @PersistenceContext
     EntityManager entityManager;
-
 
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
     public Product addUpdateProduct(Product product) throws NoConsistentQuantityException {
@@ -42,7 +40,6 @@ public class ProductService {
         return productRepository.findProductByBarCode(product.getBarCode());
     }
 
-
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public Product getProduct(int id) throws Exception{
         return productRepository.findProductByID(id);
@@ -54,10 +51,10 @@ public class ProductService {
     }
 
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
-    public List<Product> getAllProducts(){
+    public List<Product> getAllProducts(){//non serve
         return productRepository.findAll();
     }
 
-
-
+    @Transactional(readOnly = true,  propagation= Propagation.REQUIRED)
+    public Product
 }

@@ -59,7 +59,7 @@ public class CartService {
 
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Cart addProduc(List<Product> productList, String cF) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
+    public Cart aupdateProduc(List<Product> productList, String cF) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
         Users user = usersRepository.findByCodFisc(cF);
         if (!usersRepository.existsById(user.getID())) {
             throw new UserNotFoundException();

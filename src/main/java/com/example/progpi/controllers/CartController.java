@@ -37,9 +37,9 @@ public class CartController {
        return new ResponseEntity(cartService.chekOut(productList, cF), HttpStatus.OK);
     }
 
-    @GetMapping("/addProd")
+    @GetMapping("/updateProduct")
     public ResponseEntity<Cart> addProduct(@RequestBody List<Product> productList,  @RequestParam("cF") String cF) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
-        return new ResponseEntity(cartService.addProduc(productList, cF), HttpStatus.OK);
+        return new ResponseEntity(cartService.aupdateProduc(productList, cF), HttpStatus.OK);
     }
 
 

@@ -13,7 +13,7 @@ public class UserController {
     @Autowired
     private UserService uS;
 
-    @GetMapping("/add")
+    @PutMapping("/add")
     public Users saveUser(@RequestBody Users u){
         try {
             return uS.saveUser(u);

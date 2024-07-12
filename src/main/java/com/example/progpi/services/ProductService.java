@@ -55,6 +55,4 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    @Transactional(readOnly = true,  propagation= Propagation.REQUIRED)
-    public Product
 }

@@ -1,6 +1,6 @@
 package com.example.progpi.Security;
 
-import com.example.progpi.Security.JwtConverter;
+//import com.example.progpi.Security.JwtConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +14,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-@RequiredArgsConstructor
+
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     public static final String ADMIN = "admin";
@@ -24,28 +25,44 @@ public class SecurityConfig {
     private final JwtConverter jwtConverter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        /*
+        http.csrf(t-> t.disable());
+        http.authorizeHttpRequests(authorize ->{
+            authorize.anyRequest().authenticated();
+        });
+        http.oauth2ResourceServer(t->{
+            t.jwt(Customizer.withDefaults());
+        });
+        http.sessionManagement(session ->{
+            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        });*/
 
         http.cors(Customizer.withDefaults())
                 .authorizeHttpRequests((authz) ->
-                authz.requestMatchers(HttpMethod.GET, "api/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/admin/**").hasRole(ADMIN)
-                        .requestMatchers(HttpMethod.GET, "/api/user/**").hasRole(USER)
-                        .requestMatchers(HttpMethod.GET, "/api/admin-and-user/**").hasAnyRole(ADMIN,USER)
-                        .requestMatchers(HttpMethod.POST, "/api/utenti/add","/api/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                authz.requestMatchers(HttpMethod.GET, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/admin/**").hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.GET, "/user/**").hasRole(USER)
+                        .requestMatchers(HttpMethod.GET, "/admin-and-user/**").hasAnyRole(ADMIN,USER)
+                        .requestMatchers(HttpMethod.POST, "/users/add","/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyRequest().authenticated()
                 );
+
         //Quando un client invia una richiesta OPTIONS a un server, il server risponde con le informazioni sui metodi
         //HTTP (come GET, POST, PUT, DELETE, ecc.) che possono essere utilizzati su quella risorsa e su altre opzioni
         //di comunicazione disponibili.
+
         http.sessionManagement(sess -> sess.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter)));
+
+
         return http.build();
     }
+
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -68,4 +85,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return new CorsFilter(source);
     }
+
+
 }

@@ -54,6 +54,7 @@ public class UserService {
         return usersRepository.existsByEmail(email);
     }
 
+    /*
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
     public Users updateUser(Users u, String cF) throws Exception{
         Users user = usersRepository.findByCodFisc(cF);
@@ -67,6 +68,8 @@ public class UserService {
 
 
     }
+
+     */
 
     @Transactional(readOnly = false)
     public boolean delette(String cF) throws NotExistingUserException {

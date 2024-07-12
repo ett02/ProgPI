@@ -6,7 +6,6 @@ import com.example.progpi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 
 @RequestMapping("/users")
@@ -22,6 +21,7 @@ public class UserController {
             return null;
         }
     }
+
     @GetMapping("/getUsers")
     public Users getUser(@RequestParam("email")String email){
         return uS.getUser(email);
@@ -31,7 +31,6 @@ public class UserController {
     public boolean Esiste(@RequestParam("email")String email){
         return uS.Esiste(email);
     }
-
 
     @GetMapping("/delette")
     public boolean Delete(@RequestParam("codF")String codFisc) throws NotExistingUserException {

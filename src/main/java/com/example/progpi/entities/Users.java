@@ -24,8 +24,8 @@ public class Users implements Serializable {
     private int ID;
 
     @Basic
-    @Column(name = "nikname", length = 70, nullable = false)
-    private String nikname;
+    @Column(name = "username", length = 70, nullable = false)
+    private String username;
 
     @Basic
     @Column(name = "password", nullable = false)

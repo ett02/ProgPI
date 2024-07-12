@@ -45,6 +45,7 @@ public class CartService {
             if (product.getPrice() != productRepository.findProductByBarCode(product.getBarCode()).getPrice()) { // se il prezzo è cambiato
                 throw new PriceChangedException();// da fare
             }
+
             Product p = productRepository.findProductByBarCode(product.getBarCode());
             if (productInCartRepository.existsByID(p.getID())) {//see è nel carrello
                 chek(product);
@@ -53,7 +54,6 @@ public class CartService {
         // eliminare la lista dei prodotti acquistati
         productInCartRepository.deleteAll(listp);
         c.setListProductInCart(new ArrayList<>());
-
         return true;
     }
 
@@ -100,7 +100,7 @@ public class CartService {
 
     private void chek(Product pro) throws QuantityNotAvaibleException {
         Product p = productRepository.findProductByBarCode(pro.getBarCode());
-        if (p.getQuantity() - pro.getQuantity() < 0) {
+        if (pro.getQuantity()<0 || p.getQuantity() - pro.getQuantity() < 0 ) {
             throw new QuantityNotAvaibleException();
         } else {// setta la quantità disponibile aggiornandola
             p.setQuantity(p.getQuantity() - pro.getQuantity());

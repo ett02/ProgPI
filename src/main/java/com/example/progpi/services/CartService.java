@@ -9,15 +9,12 @@ import com.example.progpi.repositories.CartRepository;
 import com.example.progpi.repositories.ProductInCartRepository;
 import com.example.progpi.repositories.ProductRepository;
 import com.example.progpi.repositories.UsersRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CartService {
@@ -29,20 +26,16 @@ public class CartService {
     @Autowired
     private ProductInCartRepository productInCartRepository;
     @Autowired
-    private UsersRepository UsersRepository;
-    @PersistenceContext
-    EntityManager entityManager;
-    @Autowired
     private UsersRepository usersRepository;
 
-    @Transactional(readOnly = false, propagation= Propagation.REQUIRED, rollbackFor = Exception.class)
-    public Cart addProd(List<Product> productList,  String cF) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException{
-        Users user =  usersRepository.findByCodFisc(cF);
-        if(!usersRepository.existsById(user.getID())){
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public boolean chekOut(List<Product> productList, String cF) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
+        Users user = usersRepository.findByCodFisc(cF);
+        if (!usersRepository.existsById(user.getID())) {
             throw new UserNotFoundException();
         }
         Cart c = cartRepository.findCartByUserID(user.getID());
-        List<ProductInCart> listp=c.getListProductInCart();
+        List<ProductInCart> listp = c.getListProductInCart();
 
         for (Product product : productList) {
 
@@ -52,27 +45,57 @@ public class CartService {
             if (product.getPrice() != productRepository.findProductByBarCode(product.getBarCode()).getPrice()) { // se il prezzo è cambiato
                 throw new PriceChangedException();// da fare
             }
-
             Product p = productRepository.findProductByBarCode(product.getBarCode());
-            if (!productInCartRepository.existsByID(p.getID())) {//
-                //altrimenti lo aggiungo
-                ProductInCart pc = new ProductInCart();
-                pc.setCart(c);
-                pc.setProduct(p);
-                pc.setQuantity(product.getQuantity());
+            if (productInCartRepository.existsByID(p.getID())) {//see è nel carrello
                 chek(product);
-                listp.add(pc);
-                productInCartRepository.save(pc);
-
-            } else {
-                chek(product);
-                ProductInCart pc = productInCartRepository.findByProductID(p.getID());
-                pc.setQuantity(product.getQuantity() + pc.getQuantity());
-
             }
         }
+        // eliminare la lista dei prodotti acquistati
+        productInCartRepository.deleteAll(listp);
+        c.setListProductInCart(new ArrayList<>());
 
+        return true;
+    }
+
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public Cart addProduc(List<Product> productList, String cF) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
+        Users user = usersRepository.findByCodFisc(cF);
+        if (!usersRepository.existsById(user.getID())) {
+            throw new UserNotFoundException();
+        }
+        Cart c = cartRepository.findCartByUserID(user.getID());
+        List<ProductInCart> listp = c.getListProductInCart();
+        for (Product product : productList) {
+            if (!productRepository.existsByBarCode(product.getBarCode())) {
+                throw new RuntimeException("prod non esiste");
+            }
+            if (product.getPrice() != productRepository.findProductByBarCode(product.getBarCode()).getPrice()) {
+                throw new PriceChangedException();
+            }
+            Product product1 = productRepository.findProductByBarCode(product.getBarCode());
+            if (!productInCartRepository.existsById(product1.getID())) {
+                ProductInCart productInCart = new ProductInCart();
+                productInCart.setProduct(product1);
+                productInCart.setCart(c);
+                productInCart.setQuantity(product.getQuantity());
+                listp.add(productInCart);
+                quantityAvainlecheck(product);
+                productInCartRepository.save(productInCart);
+            } else {
+                ProductInCart product2 = productInCartRepository.findByProductID(product.getID());
+                product2.setQuantity(product2.getQuantity() + product.getQuantity());
+                quantityAvainlecheck(product);
+            }
+        }
         return c;
+    }
+
+    private void quantityAvainlecheck(Product pc) throws QuantityNotAvaibleException {
+        Product product = productRepository.findProductByBarCode(pc.getBarCode());
+        if (product.getQuantity() - pc.getQuantity() < 0){
+            throw new QuantityNotAvaibleException();
+        }
     }
 
     private void chek(Product pro) throws QuantityNotAvaibleException {
@@ -85,13 +108,14 @@ public class CartService {
     }
 
     @Transactional(readOnly = true, propagation= Propagation.REQUIRED)
-    public List<Product> getProductbyUser(int u) {
-        Cart cart = cartRepository.findByUserID(u);
+    public List<ProductInCart> getProductbyUser(String codF) throws QuantityNotAvaibleException {
+        Users u = usersRepository.findByCodFisc(codF);
+        Cart cart = cartRepository.findByUserID(u.getID());
         List<ProductInCart> PC=productInCartRepository.findAllByCartID(cart.getID());
-        List<Product> ret= new ArrayList<>();
         for(ProductInCart productInCart: PC ){
-            ret.add(productInCart.getProduct());
+            if (productInCart.getProduct().getQuantity()-productInCart.getQuantity()<0)
+                throw new QuantityNotAvaibleException("Quantity :"+ productInCart.getProduct().getQuantity());
         }
-        return ret;
+        return PC;
     }
 }

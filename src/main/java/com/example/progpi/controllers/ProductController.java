@@ -6,8 +6,9 @@ import com.example.progpi.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 
@@ -19,7 +20,6 @@ public class ProductController {
     @GetMapping("/add")
     public Product addProduct(@RequestBody Product pr) throws NoConsistentQuantityException {
             return productService.addUpdateProduct(pr);
-
     }
 
     @GetMapping("/getProduct")
@@ -31,4 +31,10 @@ public class ProductController {
     public ResponseEntity<Boolean> Esiste(@RequestParam("barCode")String code) throws Exception {
         return new ResponseEntity(productService.Esiste(code), HttpStatus.OK);
     }
+
+    @GetMapping("/getAll")
+    public List<Product> getAllProducts(){
+       return productService.getAllProducts();
+    }
+
 }

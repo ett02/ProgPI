@@ -23,11 +23,11 @@ public class Cart implements Serializable {
     @Column(name = "id")
     private int ID;
 
-    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "relatUser" )
     private Users user;
 
-    @OneToMany(mappedBy = "cart",cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cart",cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     List<ProductInCart> listProductInCart;
 
 }

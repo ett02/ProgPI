@@ -1,6 +1,7 @@
 package com.example.progpi.services;
 
 import com.example.progpi.Utilities.Exception.ExistingUserException;
+import com.example.progpi.Utilities.Exception.NotExistingUserException;
 import com.example.progpi.entities.Cart;
 
 import com.example.progpi.entities.ProductInCart;
@@ -9,6 +10,7 @@ import com.example.progpi.repositories.CartRepository;
 import com.example.progpi.repositories.ProductInCartRepository;
 import com.example.progpi.repositories.UsersRepository;
 
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,11 +25,12 @@ public class UserService {
 
     @Autowired
     UsersRepository usersRepository;
-
     @Autowired
     CartRepository cartRepository;
     @Autowired
     private ProductInCartRepository productInCartRepository;
+
+    EntityManager entityManager;
 
 
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
@@ -54,4 +57,17 @@ public class UserService {
     public boolean Esiste(String email){
         return usersRepository.existsByEmail(email);
     }
+
+    @Transactional(readOnly = false)
+    public boolean delette(String cF) throws NotExistingUserException {
+
+        if(!usersRepository.existsByCodFisc(cF)){
+            throw new NotExistingUserException();
+        }
+        Users u = usersRepository.findByCodFisc(cF);
+
+        usersRepository.delete(u);
+        return !usersRepository.existsByCodFisc(cF);
+    }
+
 }

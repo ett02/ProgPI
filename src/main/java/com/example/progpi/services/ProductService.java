@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Service
 public class ProductService {
 
@@ -49,6 +51,11 @@ public class ProductService {
     @Transactional(readOnly = true,  propagation= Propagation.REQUIRED)
     public boolean Esiste(@RequestParam("code" )String code) throws Exception{
         return productRepository.existsByBarCode(code);
+    }
+
+    @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
+    public List<Product> getAllProducts(){
+        return productRepository.findAll();
     }
 
 

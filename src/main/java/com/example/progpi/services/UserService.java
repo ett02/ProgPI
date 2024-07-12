@@ -35,9 +35,11 @@ public class UserService {
 
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
     public Users saveUser(Users u) throws Exception{
-        if(usersRepository.existsById(u.getID())){
+        if(usersRepository.existsByEmail(u.getEmail())){
             throw new ExistingUserException();
         }else {
+
+
             Cart cart = new Cart();
             u.setCart(cart);
             cart.setUser(u);

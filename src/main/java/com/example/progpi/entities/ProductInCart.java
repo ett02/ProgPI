@@ -25,6 +25,9 @@ public class ProductInCart implements Serializable {
     @Basic
     private int quantity;
 
+    //relazioni
+
+
     @ManyToOne
     @JsonIgnore
     @ToString.Exclude

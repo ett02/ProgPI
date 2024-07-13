@@ -1,19 +1,15 @@
 package com.example.progpi.services;
 
 import com.example.progpi.Utilities.Exception.*;
-import com.example.progpi.entities.Cart;
-import com.example.progpi.entities.Product;
-import com.example.progpi.entities.ProductInCart;
-import com.example.progpi.entities.Users;
-import com.example.progpi.repositories.CartRepository;
-import com.example.progpi.repositories.ProductInCartRepository;
-import com.example.progpi.repositories.ProductRepository;
-import com.example.progpi.repositories.UsersRepository;
+import com.example.progpi.entities.*;
+import com.example.progpi.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -27,6 +23,9 @@ public class CartService {
     private ProductInCartRepository productInCartRepository;
     @Autowired
     private UsersRepository usersRepository;
+    @Autowired
+    private StoricoRepository storicoRepository;
+
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public List<Product> chekOut(List<Product> productList, String email) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
@@ -53,16 +52,26 @@ public class CartService {
             ProductInCart productInCart =productInCartRepository.findByProductID(p.getID());
 
             if(productInCart.getQuantity()-product.getQuantity()==0){
+                createStorico(user,product);
                 productInCartRepository.delete(productInCart);
             }else{
                 productInCart.setQuantity(productInCart.getQuantity()-product.getQuantity());
-
+                createStorico(user,product);
             }
         }
         // eliminare la lista dei prodotti acquistati
         return productList;
     }
 
+
+    private void createStorico(Users user, Product product){
+        Storico storico =  new Storico();
+        storico.setUser(user);
+        storico.setProduct(product);
+        storico.setTime(Calendar.getInstance().getTime());
+        storico.setQuantity(product.getQuantity());
+        storicoRepository.save(storico);
+    }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public Cart aupdateProduc(List<Product> productList, String email) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {

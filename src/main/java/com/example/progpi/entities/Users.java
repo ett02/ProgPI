@@ -9,6 +9,7 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -55,11 +56,16 @@ public class Users implements Serializable {
     @Column(name = "address", length = 180,nullable = false)
     private String address;
 
-
+    //relazioni
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @ToString.Exclude
     @JsonIgnore
     private Cart cart;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    @ToString.Exclude
+    private List<Storico> storicoList;
 
 }

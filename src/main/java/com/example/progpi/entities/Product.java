@@ -47,11 +47,17 @@ public class Product {
     @Column(name = "quantity")
     private int quantity;
 
+
+    //relazioni
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JsonIgnore
     @ToString.Exclude
     List<ProductInCart> listProductInCart;
 
-
+    @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ToString.Exclude
+    List<Storico> storicoList;
 
 }

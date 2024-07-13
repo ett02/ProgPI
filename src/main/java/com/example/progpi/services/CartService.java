@@ -50,11 +50,16 @@ public class CartService {
             if (productInCartRepository.existsByID(p.getID())) {//see è nel carrello
                 chek(product);
             }
+            ProductInCart productInCart =productInCartRepository.findByProductID(p.getID());
+
+            if(productInCart.getQuantity()-product.getQuantity()==0){
+                productInCartRepository.delete(productInCart);
+            }else{
+                productInCart.setQuantity(productInCart.getQuantity()-product.getQuantity());
+
+            }
         }
         // eliminare la lista dei prodotti acquistati
-
-        productInCartRepository.deleteAll(listp);
-        c.setListProductInCart(new ArrayList<>());
         return productList;
     }
 
@@ -88,7 +93,7 @@ public class CartService {
                 quantityAvainlecheck(product);
                 productInCartRepository.save(productInCart);
             } else {
-                ProductInCart productInC2 = productInCartRepository.findByProductID(product.getID());
+                ProductInCart productInC2 = productInCartRepository.findByProductID(product1.getID());
                 if(productInC2.getQuantity()+product.getQuantity()<0)// controllo nel caso si passi una quantità negativa che lo porti a zero
                     throw new RuntimeException("Impossibile operation, could set quantity:"+productInC2.getQuantity()+product.getQuantity());
                 else if(productInC2.getQuantity()+product.getQuantity()==0) {
@@ -119,8 +124,9 @@ public class CartService {
     }
 
     @Transactional(readOnly = true, propagation= Propagation.REQUIRED)
-    public List<ProductInCart> getProductbyUser(String codF) throws QuantityNotAvaibleException {
-        Users u = usersRepository.findByCodFisc(codF);
+    public List<ProductInCart> getProductbyUser(String email) throws QuantityNotAvaibleException {
+        System.out.println(email);
+        Users u = usersRepository.findByEmail(email);
         Cart cart = cartRepository.findByUserID(u.getID());
         List<ProductInCart> PC=productInCartRepository.findAllByCartID(cart.getID());
         for(ProductInCart productInCart: PC ){

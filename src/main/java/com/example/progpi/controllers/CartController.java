@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.example.progpi.Security.Authentication.Utils.getEmail;
+
 @RestController
 @RequestMapping("/carts")
 public class CartController {
@@ -26,9 +28,10 @@ public class CartController {
     @Autowired
     private ProductInCartRepository productInCartRepository;
 
+    //@RequestParam String codF
     @GetMapping("/getAllProd")
-    public ResponseEntity<List<ProductInCart>> getAllProducts(@RequestParam String codF) throws QuantityNotAvaibleException {
-        return new ResponseEntity( cartService.getProductbyUser(codF), HttpStatus.OK);
+    public ResponseEntity<List<ProductInCart>> getAllProducts() throws QuantityNotAvaibleException {
+        return new ResponseEntity( cartService.getProductbyUser(getEmail()), HttpStatus.OK);
     }
 
     @PutMapping("/chekOut")

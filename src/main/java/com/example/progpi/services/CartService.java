@@ -52,11 +52,11 @@ public class CartService {
             ProductInCart productInCart =productInCartRepository.findByProductID(p.getID());
 
             if(productInCart.getQuantity()-product.getQuantity()==0){
-                createStorico(user,product);
+                createStorico(user,product.getQuantity(),p);
                 productInCartRepository.delete(productInCart);
             }else{
                 productInCart.setQuantity(productInCart.getQuantity()-product.getQuantity());
-                createStorico(user,product);
+                createStorico(user,product.getQuantity(),p);
             }
         }
         // eliminare la lista dei prodotti acquistati
@@ -64,12 +64,12 @@ public class CartService {
     }
 
 
-    private void createStorico(Users user, Product product){
+    private void createStorico(Users user, int quantity, Product p){
         Storico storico =  new Storico();
         storico.setUser(user);
-        storico.setProduct(product);
+        storico.setProduct(p);
         storico.setTime(Calendar.getInstance().getTime());
-        storico.setQuantity(product.getQuantity());
+        storico.setQuantity(quantity);
         storicoRepository.save(storico);
     }
 

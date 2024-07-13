@@ -25,11 +25,11 @@ public class Storico {
     private int ID;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "related_user", nullable = false)
+    @JoinColumn(name = "related_user")
     private Users user;
 
     @ManyToOne(cascade=CascadeType.MERGE)
-    @JoinColumn(name = "related_product", nullable = false)
+    @JoinColumn(name = "related_product")
     private Product product;
 
     @Basic

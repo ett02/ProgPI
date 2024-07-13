@@ -39,9 +39,9 @@ public class SecurityConfig {
 
         http.cors(Customizer.withDefaults())
                 .authorizeHttpRequests((authz) ->
-                authz.requestMatchers(HttpMethod.GET, "/**").permitAll()
+                authz.requestMatchers(HttpMethod.GET, "/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/admin/**").hasRole(ADMIN)
-                        .requestMatchers(HttpMethod.GET, "/user/**").hasRole(USER)
+                        .requestMatchers(HttpMethod.GET, "/users/**").hasRole(USER)
                         .requestMatchers(HttpMethod.GET, "/admin-and-user/**").hasAnyRole(ADMIN,USER)
                         .requestMatchers(HttpMethod.POST, "/users/add","/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/**").permitAll()

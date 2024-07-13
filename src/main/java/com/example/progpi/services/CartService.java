@@ -29,8 +29,8 @@ public class CartService {
     private UsersRepository usersRepository;
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public List<Product> chekOut(List<Product> productList, String cF) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
-        Users user = usersRepository.findByCodFisc(cF);
+    public List<Product> chekOut(List<Product> productList, String email) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
+        Users user = usersRepository.findByEmail(email);
         if (!usersRepository.existsById(user.getID())) {
             throw new UserNotFoundException();
         }
@@ -65,8 +65,8 @@ public class CartService {
 
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Cart aupdateProduc(List<Product> productList, String cF) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
-        Users user = usersRepository.findByCodFisc(cF);
+    public Cart aupdateProduc(List<Product> productList, String email) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
+        Users user = usersRepository.findByEmail(email);
         if (!usersRepository.existsById(user.getID())) {
             throw new UserNotFoundException();
         }

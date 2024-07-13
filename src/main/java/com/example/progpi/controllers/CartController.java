@@ -35,13 +35,13 @@ public class CartController {
     }
 
     @PutMapping("/chekOut")
-    public ResponseEntity<Product> chekOut(@RequestBody List<Product> productList,  @RequestParam("cF") String cF) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
-       return new ResponseEntity(cartService.chekOut(productList, cF), HttpStatus.OK);
+    public ResponseEntity<Product> chekOut(@RequestBody List<Product> productList) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
+       return new ResponseEntity(cartService.chekOut(productList, getEmail()), HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Cart> addProduct(@RequestBody List<Product> productList,  @RequestParam("cF") String cF) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
-        return new ResponseEntity(cartService.aupdateProduc(productList, cF), HttpStatus.OK);
+    public ResponseEntity<Cart> addProduct(@RequestBody List<Product> productList) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
+        return new ResponseEntity(cartService.aupdateProduc(productList, getEmail()), HttpStatus.OK);
     }
 
 }

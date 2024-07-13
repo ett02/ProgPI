@@ -9,7 +9,7 @@ public class KeycloakConfig {
     final static String serverUrl = "http://localhost:8081";
     public final static String realm = "piatSofWeb";
     final static String clientId = "springEtt";
-    final static String clientSecret = "ZJ1HB8KXsqOGR4QjzzrVjCt7p33hBCJ9";
+    final static String clientSecret = "rUIdJZSrccuGxjCM1ebjlEQKgRgievEu";
     final static String userName = "ett";
     final static String password = "12345";
 

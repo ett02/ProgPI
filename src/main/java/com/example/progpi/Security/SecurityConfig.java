@@ -25,21 +25,23 @@ public class SecurityConfig {
     private final JwtConverter jwtConverter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        /*
+
         http.csrf(t-> t.disable());
         http.authorizeHttpRequests(authorize ->{
-            authorize.anyRequest().authenticated();
+            authorize.anyRequest().permitAll();
         });
         http.oauth2ResourceServer(t->{
             t.jwt(Customizer.withDefaults());
         });
         http.sessionManagement(session ->{
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        });*/
-
+        });
+/*
         http.cors(Customizer.withDefaults())
                 .authorizeHttpRequests((authz) ->
-                authz.requestMatchers(HttpMethod.GET, "/**").authenticated()
+                authz.requestMatchers(
+
+                         HttpMethod.GET, "/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/admin/**").hasRole(ADMIN)
                         .requestMatchers(HttpMethod.GET, "/users/**").hasRole(USER)
                         .requestMatchers(HttpMethod.GET, "/admin-and-user/**").hasAnyRole(ADMIN,USER)
@@ -48,18 +50,23 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        .anyRequest().authenticated()
-                );
 
+
+                        .anyRequest().permitAll()
+
+
+                );
+  */
         //Quando un client invia una richiesta OPTIONS a un server, il server risponde con le informazioni sui metodi
         //HTTP (come GET, POST, PUT, DELETE, ecc.) che possono essere utilizzati su quella risorsa e su altre opzioni
         //di comunicazione disponibili.
 
+        /*
         http.sessionManagement(sess -> sess.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter)));
 
-
+*/
         return http.build();
     }
 

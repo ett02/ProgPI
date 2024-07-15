@@ -21,7 +21,7 @@ public class Users implements Serializable {
     @JsonIgnore
     @ToString.Exclude
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "id", nullable = false, unique = true)
+    @Column (name = "id", unique = true)
     private int ID;
 
     @Basic
@@ -33,7 +33,7 @@ public class Users implements Serializable {
     private String password;
 
     @Basic
-    @Column (name = "name", length = 50, nullable = false)
+    @Column (name = "name", length = 50)
     private String name;
 
     @Basic
@@ -41,19 +41,19 @@ public class Users implements Serializable {
     private String email;
 
     @Basic
-    @Column (name = "surname", length = 50,nullable = false)
+    @Column (name = "surname", length = 50)
     private String surname;
 
     @Basic
-    @Column(name = "codFisc", unique = true, nullable = false)
+    @Column(name = "codFisc", unique = true )
     private String codFisc;
 
     @Basic
-    @Column(name = "telephon", nullable = false, length = 10)
+    @Column(name = "telephon", length = 10)
     private String telephon;
 
     @Basic
-    @Column(name = "address", length = 180,nullable = false)
+    @Column(name = "address", length = 180)
     private String address;
 
     //relazioni

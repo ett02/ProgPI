@@ -32,8 +32,6 @@ public class UserService {
         if(usersRepository.existsByEmail(u.getEmail())){
             throw new ExistingUserException();
         }else {
-
-
             Cart cart = new Cart();
             u.setCart(cart);
             cart.setUser(u);

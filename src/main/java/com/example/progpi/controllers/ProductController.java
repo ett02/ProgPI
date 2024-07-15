@@ -17,7 +17,7 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @GetMapping("/add")
+    @PutMapping("/add")
     public Product addProduct(@RequestBody Product pr) throws NoConsistentQuantityException {
             return productService.addUpdateProduct(pr);
     }

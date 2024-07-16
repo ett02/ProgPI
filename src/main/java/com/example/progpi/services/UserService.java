@@ -1,5 +1,6 @@
 package com.example.progpi.services;
 
+import com.example.progpi.Security.Authentication.KeycloakConfig;
 import com.example.progpi.Utilities.Exception.ExistingUserException;
 import com.example.progpi.Utilities.Exception.NotExistingUserException;
 import com.example.progpi.entities.Cart;
@@ -8,11 +9,18 @@ import com.example.progpi.repositories.CartRepository;
 import com.example.progpi.repositories.ProductInCartRepository;
 import com.example.progpi.repositories.UsersRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.ws.rs.core.Response;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 
 @Service
 public class UserService {
@@ -32,6 +40,8 @@ public class UserService {
         if(usersRepository.existsByEmail(u.getEmail())){
             throw new ExistingUserException();
         }else {
+            //settiamo l'utente su keycloak
+            addKeyUser(u);
             Cart cart = new Cart();
             u.setCart(cart);
             cart.setUser(u);
@@ -80,5 +90,59 @@ public class UserService {
         usersRepository.delete(u);
         return !usersRepository.existsByCodFisc(cF);
     }
+
+
+    public void addKeyUser(Users utente) throws ExistingUserException {
+
+        Keycloak keycloak= KeycloakConfig.getInstance();
+
+        UserRepresentation user = new UserRepresentation();
+        user.setEnabled(true);
+        user.setUsername(utente.getUsername());
+        user.setFirstName(utente.getName());
+        user.setLastName(utente.getSurname());
+        user.setEmail(utente.getEmail());
+        user.setCredentials(Collections.singletonList(createPasswordCredentials(utente.getPassword())));
+        user.setEmailVerified(true);
+
+
+//       Get realm
+        RealmResource realmResource = keycloak.realm(KeycloakConfig.realm);
+        UsersResource usersResource = realmResource.users();
+
+
+        CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
+        credentialRepresentation.setTemporary(false);
+        credentialRepresentation.setType(CredentialRepresentation.PASSWORD);
+        credentialRepresentation.setValue(utente.getPassword());
+        user.setCredentials(Collections.singletonList(credentialRepresentation));
+
+//      Create user (requires manage-users role)
+        Response response=usersResource.create(user);
+        if (response.getStatus() == 201) {
+            System.out.println("User created successfully.");
+        } else {
+            System.err.println("Failed to create user. HTTP error code: " + response.getStatus());
+            System.err.println("Error message: " + response.getStatusInfo().getReasonPhrase());
+            if (response.hasEntity())
+                System.err.println("Error details: " + response.readEntity(String.class));
+
+            response.close();
+            throw new ExistingUserException();
+        }
+
+
+
+    }
+
+
+    public static CredentialRepresentation createPasswordCredentials(String password) {
+        CredentialRepresentation passwordCredentials = new CredentialRepresentation();
+        passwordCredentials.setTemporary(false);
+        passwordCredentials.setType(CredentialRepresentation.PASSWORD);
+        passwordCredentials.setValue(password);
+        return passwordCredentials;
+    }
+
 
 }

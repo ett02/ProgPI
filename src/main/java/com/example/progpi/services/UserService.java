@@ -105,18 +105,16 @@ public class UserService {
         user.setCredentials(Collections.singletonList(createPasswordCredentials(utente.getPassword())));
         user.setEmailVerified(true);
 
-
 //       Get realm
         RealmResource realmResource = keycloak.realm(KeycloakConfig.realm);
         UsersResource usersResource = realmResource.users();
-
-
+/*
         CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
         credentialRepresentation.setTemporary(false);
         credentialRepresentation.setType(CredentialRepresentation.PASSWORD);
         credentialRepresentation.setValue(utente.getPassword());
         user.setCredentials(Collections.singletonList(credentialRepresentation));
-
+*/
 //      Create user (requires manage-users role)
         Response response=usersResource.create(user);
         if (response.getStatus() == 201) {
@@ -130,9 +128,6 @@ public class UserService {
             response.close();
             throw new ExistingUserException();
         }
-
-
-
     }
 
 

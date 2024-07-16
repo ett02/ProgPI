@@ -30,12 +30,15 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize ->{
             authorize.anyRequest().permitAll();
         });
+
         http.oauth2ResourceServer(t->{
             t.jwt(Customizer.withDefaults());
         });
         http.sessionManagement(session ->{
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         });
+
+
 /*
         http.cors(Customizer.withDefaults())
                 .authorizeHttpRequests((authz) ->
@@ -61,12 +64,12 @@ public class SecurityConfig {
         //HTTP (come GET, POST, PUT, DELETE, ecc.) che possono essere utilizzati su quella risorsa e su altre opzioni
         //di comunicazione disponibili.
 
-
+/*
         http.sessionManagement(sess -> sess.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter)));
 
-
+*/
         return http.build();
     }
 

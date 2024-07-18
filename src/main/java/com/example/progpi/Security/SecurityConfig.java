@@ -24,11 +24,16 @@ public class SecurityConfig {
     public static final String USER = "user";
     private final JwtConverter jwtConverter;
     @Bean
+
+
+
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(t-> t.disable());
+        http.csrf(t-> t.disable());/*
         http.authorizeHttpRequests(authorize ->{
-            authorize.anyRequest().permitAll();
+            authorize.requestMatchers(HttpMethod.POST, "/user/add").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/user/get").authenticated()
+                    .anyRequest().authenticated();
         });
 
         http.oauth2ResourceServer(t->{
@@ -37,6 +42,36 @@ public class SecurityConfig {
         http.sessionManagement(session ->{
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         });
+*/
+
+
+        http.cors(Customizer.withDefaults())
+                .authorizeHttpRequests((authz) ->
+                        authz.requestMatchers(HttpMethod.POST, "/user/add").permitAll()
+                                .anyRequest().authenticated()
+
+                );
+
+        //Quando un client invia una richiesta OPTIONS a un server, il server risponde con le informazioni sui metodi
+        //HTTP (come GET, POST, PUT, DELETE, ecc.) che possono essere utilizzati su quella risorsa e su altre opzioni
+        //di comunicazione disponibili.
+
+
+        http.sessionManagement(sess -> sess.sessionCreationPolicy(
+                SessionCreationPolicy.STATELESS));
+        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter)));
+
+
+        return http.build();
+    }
+    /*
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http.csrf(t-> t.disable());
+        http.authorizeHttpRequests(authorize ->{
+            authorize.anyRequest().permitAll();
+        });
+
 
 
 /*
@@ -59,7 +94,7 @@ public class SecurityConfig {
 
 
                 );
-  */
+
         //Quando un client invia una richiesta OPTIONS a un server, il server risponde con le informazioni sui metodi
         //HTTP (come GET, POST, PUT, DELETE, ecc.) che possono essere utilizzati su quella risorsa e su altre opzioni
         //di comunicazione disponibili.
@@ -72,7 +107,7 @@ public class SecurityConfig {
 
         return http.build();
     }
-
+*/
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -6,6 +6,8 @@ import com.example.progpi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import static com.example.progpi.Security.Authentication.Utils.getEmail;
+
 @RestController
 
 @RequestMapping("/users")
@@ -23,8 +25,8 @@ public class UserController {
     }
 
     @GetMapping("/getUsers")
-    public Users getUser(@RequestParam("email")String email){
-        return uS.getUser(email);
+    public Users getUser(String email){
+        return uS.getUser(getEmail());
     }
 
     @GetMapping("/esiste")

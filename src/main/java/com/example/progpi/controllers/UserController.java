@@ -25,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/getUsers")
-    public Users getUser(String email){
+    public Users getUser(){
         return uS.getUser(getEmail());
     }
 

@@ -47,7 +47,7 @@ public class SecurityConfig {
 
         http.cors(Customizer.withDefaults())
                 .authorizeHttpRequests((authz) ->
-                        authz.requestMatchers(HttpMethod.POST, "/user/add").permitAll()
+                        authz.requestMatchers(HttpMethod.PUT, "/users/add").permitAll()
                                 .anyRequest().authenticated()
 
                 );

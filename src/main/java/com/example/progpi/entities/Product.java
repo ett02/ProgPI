@@ -43,6 +43,10 @@ public class Product {
     @Column(name = "price")
     private float price;
 
+    @Lob
+    @Column(name = "immage")
+    private byte[] immage;
+
     @Basic
     @Column(name = "quantity")
     private int quantity;

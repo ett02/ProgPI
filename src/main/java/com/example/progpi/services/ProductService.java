@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Service
@@ -22,10 +24,17 @@ public class ProductService {
     EntityManager entityManager;
 
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
-    public Product addUpdateProduct(Product product) throws NoConsistentQuantityException {
+    public Product addUpdateProduct(Product product,  MultipartFile file) throws NoConsistentQuantityException {
         if (!productRepository.existsByBarCode(product.getBarCode())){
             if (product.getQuantity() < 0 )
                 throw new NoConsistentQuantityException();
+            if (file != null && !file.isEmpty()) {
+                try {
+                    product.setImmage(file.getBytes());
+                } catch (Exception e) {
+                    throw new RuntimeException("Error saving image", e);
+                }
+            }
             productRepository.save(product);
         }else {
             Product product1 = productRepository.findProductByBarCode(product.getBarCode());

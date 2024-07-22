@@ -4,6 +4,7 @@ import com.example.progpi.Utilities.Exception.*;
 import com.example.progpi.entities.*;
 import com.example.progpi.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -108,6 +109,7 @@ public class CartService {
                 else if(productInC2.getQuantity()+product.getQuantity()==0) {
                     productInCartRepository.delete(productInC2);
                 }else {
+
                     productInC2.setQuantity(productInC2.getQuantity() + product.getQuantity());
                     quantityAvainlecheck(product);
                 }
@@ -136,6 +138,7 @@ public class CartService {
     public List<ProductInCart> getProductbyUser(String email) throws QuantityNotAvaibleException {
         System.out.println(email);
         Users u = usersRepository.findByEmail(email);
+        System.out.println(u );
         Cart cart = cartRepository.findByUserID(u.getID());
         List<ProductInCart> PC=productInCartRepository.findAllByCartID(cart.getID());
         for(ProductInCart productInCart: PC ){
@@ -143,5 +146,20 @@ public class CartService {
                 throw new QuantityNotAvaibleException("Quantity :"+ productInCart.getProduct().getQuantity());
         }
         return PC;
+    }
+
+    @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
+    public boolean deleteProd(String email,String barCod) throws Exception {
+        Users u = usersRepository.findByEmail(email);
+        Cart cart = cartRepository.findByUserID(u.getID());
+        List<ProductInCart> PC=productInCartRepository.findAllByCartID(cart.getID());
+        for(ProductInCart productInCart: PC ){
+            if(productInCart.getProduct().getBarCode().equals(barCod)){
+                productInCartRepository.delete(productInCart);
+                cart.getListProductInCart().remove(productInCart);
+                return true;
+            }
+        }
+        return false;
     }
 }

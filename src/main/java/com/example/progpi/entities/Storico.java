@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "storico")
-public class Storico {
+public class Storico implements Serializable {
 
     @Id
     @JsonIgnore

@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name =  "product")
-public class Product {
+public class Product implements Serializable {
 
     @Id
     @JsonIgnore
@@ -51,6 +51,10 @@ public class Product {
     @Column(name = "quantity")
     private int quantity;
 
+    @Version
+    @JsonIgnore
+    @ToString.Exclude
+    private long version;
 
     //relazioni
 

@@ -44,4 +44,9 @@ public class CartController {
         return new ResponseEntity(cartService.aupdateProduc(productList, getEmail()), HttpStatus.OK);
     }
 
+    @DeleteMapping("/deletteProd")
+    public ResponseEntity<Boolean> deletteProd(@RequestParam("barCode") String barCode) throws Exception {
+        return new ResponseEntity(cartService.deleteProd(getEmail(),barCode), HttpStatus.OK);
+    }
+
 }

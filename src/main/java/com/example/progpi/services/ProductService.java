@@ -5,6 +5,8 @@ import com.example.progpi.entities.Product;
 import com.example.progpi.repositories.ProductRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class ProductService {
                 throw new NoConsistentQuantityException();
             if (file != null && !file.isEmpty()) {
                 try {
+                    System.out.println(file.getBytes());
                     product.setImmage(file.getBytes());
                 } catch (Exception e) {
                     throw new RuntimeException("Error saving image", e);
@@ -50,18 +53,26 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-    public Product getProduct(int id) throws Exception{
-        return productRepository.findProductByID(id);
+    public List<Product> getProduct(String nome) throws Exception{
+        return productRepository.findProductByName(nome);
+    }
+
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+    public Page<Product> getAllProduct(int nPage, int dPage)throws Exception{
+        PageRequest pageRequest = PageRequest.of(nPage, dPage);
+        return productRepository.findAll(pageRequest);
     }
 
     @Transactional(readOnly = true,  propagation= Propagation.REQUIRED)
-    public boolean Esiste(@RequestParam("code" )String code) throws Exception{
+    public boolean Esiste(String code) throws Exception{
         return productRepository.existsByBarCode(code);
     }
 
-    @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
-    public List<Product> getAllProducts(){//non serve
-        return productRepository.findAll();
+
+    @Transactional(readOnly = true)
+    public Page<Product> getAllByName(String name,int nPage, int dPage) throws Exception{
+        PageRequest pageRequest = PageRequest.of(nPage, dPage);
+        return productRepository.findAllByName(name,pageRequest);
     }
 
 }

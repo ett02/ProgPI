@@ -9,6 +9,8 @@ import com.example.progpi.entities.Product;
 import com.example.progpi.entities.ProductInCart;
 import com.example.progpi.repositories.ProductInCartRepository;
 import com.example.progpi.services.CartService;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,21 +32,21 @@ public class CartController {
 
     //@RequestParam String codF
     @GetMapping("/getAllProd")
-    public ResponseEntity<List<ProductInCart>> getAllProducts() throws QuantityNotAvaibleException {
-        return new ResponseEntity( cartService.getProductbyUser(getEmail()), HttpStatus.OK);
+    public ResponseEntity<Page<ProductInCart>> getAllProducts(@RequestParam("nPage") int nPage, @RequestParam("dPage") int dPage) throws QuantityNotAvaibleException {
+        return new ResponseEntity( cartService.getProductbyUser(getEmail(),nPage,dPage), HttpStatus.OK);
     }
 
     @PutMapping("/chekOut")
-    public ResponseEntity<Product> chekOut(@RequestBody List<Product> productList) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
+    public ResponseEntity<ProductInCart> chekOut(@RequestBody List<ProductInCart> productList) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
        return new ResponseEntity(cartService.chekOut(productList, getEmail()), HttpStatus.OK);
     }
 
     @PutMapping("/update")
     public ResponseEntity<Cart> addProduct(@RequestBody List<Product> productList) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
-        return new ResponseEntity(cartService.aupdateProduc(productList, getEmail()), HttpStatus.OK);
+        return new ResponseEntity(cartService.updateProduct(productList, getEmail()), HttpStatus.OK);
     }
 
-    @DeleteMapping("/deletteProd")
+    @DeleteMapping("/deleteProd")
     public ResponseEntity<Boolean> deletteProd(@RequestParam("barCode") String barCode) throws Exception {
         return new ResponseEntity(cartService.deleteProd(getEmail(),barCode), HttpStatus.OK);
     }

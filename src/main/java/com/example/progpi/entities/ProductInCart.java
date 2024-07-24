@@ -19,7 +19,7 @@ public class ProductInCart implements Serializable {
     @JsonIgnore
     @ToString.Exclude
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private int ID;
 
     @Basic
@@ -28,9 +28,10 @@ public class ProductInCart implements Serializable {
     //relazioni
 
 
-    @ManyToOne
+
     @JsonIgnore
     @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "related_cart")
     private Cart cart;
 

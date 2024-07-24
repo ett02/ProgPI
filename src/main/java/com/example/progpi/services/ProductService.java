@@ -27,7 +27,7 @@ public class ProductService {
 
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
     public Product addUpdateProduct(Product product,  MultipartFile file) throws NoConsistentQuantityException {
-        if (!productRepository.existsByBarCode(product.getBarCode())){
+        if (!productRepository.existsProductByBarCode(product.getBarCode())){
             if (product.getQuantity() < 0 )
                 throw new NoConsistentQuantityException();
             if (file != null && !file.isEmpty()) {
@@ -65,7 +65,7 @@ public class ProductService {
 
     @Transactional(readOnly = true,  propagation= Propagation.REQUIRED)
     public boolean Esiste(String code) throws Exception{
-        return productRepository.existsByBarCode(code);
+        return productRepository.existsProductByBarCode(code);
     }
 
 

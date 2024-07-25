@@ -16,6 +16,9 @@ import java.util.List;
 public interface ProductInCartRepository extends JpaRepository<ProductInCart, Integer>{
 
     boolean existsByProductID(int id);
+
+    ProductInCart findByProductIDAndCartID(int productID, int cartID);
+    boolean existsByProductIDAndCartID(int id, int cartID);
     ProductInCart findByProductID(int id);
     ProductInCart findByCartID( int cartID);
     @Query("SELECT p FROM ProductInCart p WHERE p.cart.ID = :id")

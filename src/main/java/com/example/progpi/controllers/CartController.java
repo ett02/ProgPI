@@ -37,7 +37,7 @@ public class CartController {
     }
 
     @PutMapping("/chekOut")
-    public ResponseEntity<ProductInCart> chekOut(@RequestBody List<ProductInCart> productList) throws UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
+    public ResponseEntity<ProductInCart> chekOut(@RequestBody List<ProductInCart> productList) throws Exception, UserNotFoundException,PriceChangedException,QuantityNotAvaibleException  {
        return new ResponseEntity(cartService.chekOut(productList, getEmail()), HttpStatus.OK);
     }
 

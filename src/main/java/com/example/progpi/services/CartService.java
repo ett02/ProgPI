@@ -31,41 +31,37 @@ public class CartService {
     private StoricoRepository storicoRepository;
 
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public List<ProductInCart> chekOut(List<ProductInCart> productList, String email) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
+    @Transactional(readOnly=false,rollbackFor = Exception.class)
+    public List<ProductInCart> chekOut(List<ProductInCart> products, String email) throws UserNotFoundException, PriceChangedException, Exception {
         Users user = usersRepository.findByEmail(email);
-
-        if (!usersRepository.existsById(user.getID())) {
+        if (!usersRepository.existsById(user.getID()))
             throw new UserNotFoundException();
-        }
-        Cart c = cartRepository.findCartByUserID(user.getID());
-        List<ProductInCart> listp = c.getListProductInCart();
-
-        for (ProductInCart product : productList) {
-
-            if (!productRepository.existsProductByBarCode(product.getProduct().getBarCode())) {
-                throw new RuntimeException("prod non esiste");
+           Cart cart = cartRepository.findByUserID(user.getID());
+        for (ProductInCart pc : products) {
+            if (!productRepository.existsProductByBarCode(pc.getProduct().getBarCode())) {
+                throw new Exception("il prodotto no esiste");
             }
-            if (product.getProduct().getPrice() != productRepository.findProductByBarCode(product.getProduct().getBarCode()).getPrice()) { // se il prezzo è cambiato
+            if (pc.getProduct().getPrice() != productRepository.findProductByBarCode(pc.getProduct().getBarCode()).getPrice()) {
                 throw new PriceChangedException();// da fare
             }
-
-            Product p = productRepository.findProductByBarCode(product.getProduct().getBarCode());
-            if (productInCartRepository.existsByProductID(p.getID())) {//see è nel carrello
-                chek(product.getProduct());
-            }
-            ProductInCart productInCart =productInCartRepository.findByProductID(p.getID());
-
-            if(productInCart.getQuantity()-product.getQuantity()==0){
-                createStorico(user,product.getQuantity(),p);
+            Product product=productRepository.findProductByBarCode(pc.getProduct().getBarCode());
+            System.out.println("quantità lista prodotti nel carrello:"+pc.getQuantity()+"quantità disponibbile:"+product.getQuantity());
+            if(pc.getQuantity()<0||product.getQuantity() - pc.getQuantity()<0 )
+                throw new QuantityNotAvaibleException();
+            product.setQuantity(product.getQuantity() - pc.getQuantity());
+            ProductInCart productInCart = productInCartRepository.findByProductIDAndCartID(product.getID(),cart.getID());
+            int quantityBuy=productInCart.getQuantity()- pc.getQuantity();
+            productInCart.setQuantity(quantityBuy);
+            createStorico(user,pc.getQuantity(),product);
+            if(quantityBuy==0)
                 productInCartRepository.delete(productInCart);
-            }else{
-                productInCart.setQuantity(productInCart.getQuantity()-product.getQuantity());
-                createStorico(user,product.getQuantity(),p);
-            }
+
         }
-        // eliminare la lista dei prodotti acquistati
-        return productList;
+        //elimino ora la lista dei prodotti acquistati
+
+        //productInCartRepository.deleteAll(cart.getListProductInCart());
+        //cart.setListProductInCart(new ArrayList<>());
+        return products;
     }
 
 
@@ -97,7 +93,7 @@ public class CartService {
                 if (product.getQuantity() == 0)//se passo un prodotto con quantità a zero passo avanti
                     break;
                 Product p = productRepository.findProductByBarCode(product.getBarCode());
-                if (!productInCartRepository.existsByProductID(p.getID())) {//se non è presente nel carrello
+                if (!productInCartRepository.existsByProductIDAndCartID(p.getID(),cart.getID())) {//se non è presente nel carrello
 
                     ProductInCart productInCart = new ProductInCart();
                     productInCart.setProduct(p);
@@ -113,7 +109,7 @@ public class CartService {
                     productInCartRepository.save(productInCart);
 
                 } else {
-                    ProductInCart productInCart = productInCartRepository.findByProductID(p.getID()); //se è già presente nel carrello
+                    ProductInCart productInCart = productInCartRepository.findByProductIDAndCartID(p.getID(),cart.getID()); //se è già presente nel carrello
                     if(productInCart.getQuantity() + product.getQuantity()<0)
                     throw new QuantityNotAvaibleException("negativeQuantity:" + (productInCart.getQuantity() + product.getQuantity()));
 

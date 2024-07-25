@@ -156,6 +156,7 @@ public class CartService {
     @Transactional(readOnly = true, propagation= Propagation.REQUIRED)
     public Page<ProductInCart> getProductbyUser(String email,int nPage,int dPage) throws QuantityNotAvaibleException {
         Pageable pageRequest= PageRequest.of(nPage,dPage);
+
         Users u = usersRepository.findByEmail(email);
         System.out.println(u );
         Cart cart = cartRepository.findByUserID(u.getID());

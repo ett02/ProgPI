@@ -37,9 +37,9 @@ public class UserService {
 
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
     public Users saveUser(Users u) throws Exception{
-        if(usersRepository.existsByEmail(u.getEmail())){
+        if(usersRepository.existsByEmail(u.getEmail()) ){
             throw new ExistingUserException();
-        }else {
+        }else{
             //settiamo l'utente su keycloak
             addKeyUser(u);
             Cart cart = new Cart();
@@ -48,8 +48,8 @@ public class UserService {
             cart.setListProductInCart(new ArrayList<>());
             cartRepository.save(cart);
             usersRepository.save(u);
-            return u;
         }
+        return u;
     }
 
     @Transactional(readOnly = true, propagation= Propagation.REQUIRED)
@@ -62,35 +62,34 @@ public class UserService {
         return usersRepository.existsByEmail(email);
     }
 
-    /*
+
     @Transactional(readOnly = false, propagation= Propagation.REQUIRED)
-    public Users updateUser(Users u, String cF) throws Exception{
-        Users user = usersRepository.findByCodFisc(cF);
-
-        user.setEmail(u.getEmail());
-        user.setName(u.getName());
-        user.setSurname(u.getSurname());
-        user.setAddress(u.getAddress());
-        user.setTelephon(u.getTelephon());
-
-
-
+    public Users updateUser(Users u, String email) throws Exception{
+        Users user = usersRepository.findByEmail(email);
+            //updateUserCredentials(u);
+            user.setAddress(u.getAddress());
+            user.setTelephon(u.getTelephon());
+            user.setCodFisc(u.getCodFisc());
+            user.setName(u.getName());
+            user.setSurname(u.getSurname());
+            user.setAddress(u.getAddress());
+            user.setTelephon(u.getTelephon());
+        return usersRepository.save(user);
     }
 
-     */
+
 
     @Transactional(readOnly = false)
-    public boolean delette(String cF) throws NotExistingUserException {
+    public boolean delette(String email) throws NotExistingUserException {
 
-        if(!usersRepository.existsByCodFisc(cF)){
+        if(!usersRepository.existsByEmail(email)){
             throw new NotExistingUserException();
         }
-        Users u = usersRepository.findByCodFisc(cF);
+        Users u = usersRepository.findByEmail(email);
 
         usersRepository.delete(u);
-        return !usersRepository.existsByCodFisc(cF);
+        return !usersRepository.existsByEmail(email);
     }
-
 
     public void addKeyUser(Users utente) throws ExistingUserException {
 
@@ -129,7 +128,6 @@ public class UserService {
             throw new ExistingUserException();
         }
     }
-
 
     public static CredentialRepresentation createPasswordCredentials(String password) {
         CredentialRepresentation passwordCredentials = new CredentialRepresentation();

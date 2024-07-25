@@ -87,7 +87,7 @@ public class CartService {
         Cart cart = cartRepository.findByUserID(user.getID());
         List<ProductInCart> productInCarts = cart.getListProductInCart();
         for (Product product : products) {
-            System.out.print("listaaaaaaaaadi prodotti"+ product.getName());
+
             if (!productRepository.existsProductByBarCode(product.getBarCode())) {
                 throw new RuntimeException();
             }
@@ -98,7 +98,7 @@ public class CartService {
                     break;
                 Product p = productRepository.findProductByBarCode(product.getBarCode());
                 if (!productInCartRepository.existsByProductID(p.getID())) {//se non è presente nel carrello
-                    System.out.println("ma ruttu u cazuzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+
                     ProductInCart productInCart = new ProductInCart();
                     productInCart.setProduct(p);
                     productInCart.setCart(cart);
@@ -134,52 +134,7 @@ public class CartService {
 
 
 
-    /*
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-    public Cart aupdateProduc(List<Product> productList, String email) throws UserNotFoundException, PriceChangedException, QuantityNotAvaibleException {
-        Users user = usersRepository.findByEmail(email);
-        if (!usersRepository.existsById(user.getID())) {
-            throw new UserNotFoundException();
-        }
-        Cart c = cartRepository.findCartByUserID(user.getID());
-        List<ProductInCart> listp = c.getListProductInCart();
-        for (Product product : productList) {
-            if (!productRepository.existsByBarCode(product.getBarCode())) {
-                throw new RuntimeException("prod non esiste");
-            }
-            if (product.getPrice() != productRepository.findProductByBarCode(product.getBarCode()).getPrice()) {
-                throw new PriceChangedException();
-            }
-            if(product.getQuantity()==0)// se la quantità è a zero vado al prossimo prodotto
-                break;
-            Product product1 = productRepository.findProductByBarCode(product.getBarCode());
-            if (!productInCartRepository.existsById(product1.getID())) {
-                ProductInCart productInCart = new ProductInCart();
-                productInCart.setProduct(product1);
-                productInCart.setCart(c);
-                if(product.getQuantity()<0)
-                    throw new RuntimeException("Negative quantity");
-                productInCart.setQuantity(product.getQuantity());
-                listp.add(productInCart);
-                quantityAvainlecheck(product);
-                productInCartRepository.save(productInCart);
-            } else {
-                ProductInCart productInC2 = productInCartRepository.findByProductID(product1.getID());
-                if(productInC2.getQuantity()+product.getQuantity()<0)// controllo nel caso si passi una quantità negativa che lo porti a zero
-                    throw new RuntimeException("Impossibile operation, could set quantity:"+productInC2.getQuantity()+product.getQuantity());
-                else if(productInC2.getQuantity()+product.getQuantity()==0) {
-                    productInCartRepository.delete(productInC2);
-                }else {
 
-                    productInC2.setQuantity(productInC2.getQuantity() + product.getQuantity());
-                    quantityAvainlecheck(product);
-                }
-            }
-        }
-        return c;
-    }
-
-     */
 
 
     private void quantityAvainlecheck(Product pc) throws QuantityNotAvaibleException {
